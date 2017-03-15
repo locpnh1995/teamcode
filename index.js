@@ -13,7 +13,7 @@ var data;
 var connection = null;
 var dbPort = 28015;
 var dbName = 'teamcode';
-var dbHost = 'teamcode.me'
+var dbHost = 'localhost'
 
 //determine RethinkDB is listening to any change on some table
 var isDBListening=false;
@@ -60,6 +60,7 @@ app.get('/getCursor/:cursorUsername',function(req,res){
 });
 
 //static route
+app.use('/', express.static(__dirname));
 app.use('/bower',express.static(__dirname+'/bower_components'));
 app.use('/nodejs',express.static(__dirname+'/node_modules'));
 app.use('/css',express.static(__dirname+'/customCSS'));
