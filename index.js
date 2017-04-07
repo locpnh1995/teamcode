@@ -43,6 +43,7 @@ app.use('/bower',express.static(__dirname+'/bower_components'));
 app.use('/nodejs',express.static(__dirname+'/node_modules'));
 app.use('/css',express.static(__dirname+'/customCSS'));
 app.use('/emmet',express.static(__dirname+'/emmet'));
+app.use('/csslintjs',express.static(__dirname+'/csslintjs'));
 /*
 
 //login
