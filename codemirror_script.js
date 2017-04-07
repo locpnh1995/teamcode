@@ -1,14 +1,69 @@
+var theme = 'monokai';
 var myCodeMirror = CodeMirror.fromTextArea(document.getElementById("editor"), 
 	{
-		lineNumbers: true, 
-		mode: "javascript"
+		lineNumbers: true,
+		lineWrapping: true,
+		extraKeys: { "Ctrl-Space": "autocomplete" }, 
+		mode: { name: "text/html", globalVars: true },
+		autoCloseTags: true,
+		autoCloseBrackets: true,
+		styleActiveLine: true,
+		tabSize: 2,
+		gutters: ["CodeMirror-lint-markers", "CodeMirror-linenumbers", "breakpoints"],
+		lint: true,
+		theme: theme,
+		profile: 'xhtml'
 	}); 
-var username = window.location.toString().substr(window.location.toString().indexOf('=')+1);
-var fileURL = 'index.js';
+emmetCodeMirror(myCodeMirror);
+
+myCodeMirror.on("gutterClick", function(cm, n) {
+  var info = cm.lineInfo(n);
+  cm.setGutterMarker(n, "breakpoints", info.gutterMarkers ? null : makeMarker());
+});
+
+function makeMarker() {
+  var marker = document.createElement("div");
+  marker.style.color = "#822";
+  marker.innerHTML = "●";
+  return marker;
+}
+
+
+const CURSOR_MODE = 'local'; //get cursor position from the top-left editor.
+
+
+//var username = window.location.toString().substr(window.location.toString().indexOf('=')+1);
+var username = prompt("Your name ?");
+var fileURL = prompt("Your file ?");
 var timeToSyncRethinkDB;
-var timeToHideCursorName;
+var timeToHideCursorName={};
+var colorList = ['#ff0000','#8c8c08','#3faf1a','#af6e1a','#5d13ad','#960a91','#960a50','#960a17','#0a968f'];
+var colorListIndex=0;
+
 
 var socket = io();
+
+socket.on('connect',function(){
+	var connectionInfos = {};
+	connectionInfos.room = fileURL;
+	connectionInfos.username = username
+	socket.emit('joinRoom',connectionInfos);
+});
+
+socket.on ('appendCursors',function(cursors){
+	var cursor;
+	console.log(cursors);
+	for(i=0; i<cursors.length; i++)
+	{
+		cursor = cursors[i];
+		console.log(cursor);
+		$('.CodeMirror-lines div:first').prepend(cursor.value);
+	}
+});
+
+socket.on('deleteCursor',function(username){
+	$('#'+username).remove();
+});
 
 socket.on('disconnect',function(){});
 
@@ -17,11 +72,11 @@ socket.on('document-coming',function(data){
 });
 
 socket.on('cursor-coming',function (data){
+	
 	if (data.new_val.username != username)
 	{
 		var cursorLine = data.new_val.line;
 		var cursorChar = data.new_val.ch;
-		const CURSOR_MODE = 'local'; //get cursor position from the top-left editor.
 
 		//return of coordinate of cursor (left, right, top, bottom), when we have {line: , ch: }
 		var cursorCoordinate=myCodeMirror.cursorCoords({line: cursorLine,ch: cursorChar}, CURSOR_MODE);
@@ -30,34 +85,31 @@ socket.on('cursor-coming',function (data){
 		var cursorElement = '#'+data.new_val.username+' div';
 		var cursorLeftPosition=cursorCoordinate.left+'px';
 		var cursorTopPosition=cursorCoordinate.top-4+'px';
-		$(cursorElement).css({left: cursorLeftPosition,top: cursorTopPosition, "border-left": '1px solid red'});
+		$(cursorElement).css({left: cursorLeftPosition,top: cursorTopPosition});
 		
 		//setting attribute of username above it's cursor
 		var cursorNameElement = '#'+data.new_val.username+' div.cursor-name';
 		var cursorNameLeftPosition=cursorCoordinate.left+1+'px';
 		var cursorNameTopPosition=cursorCoordinate.top-22+'px';
-		$(cursorNameElement).css({left: cursorNameLeftPosition,top: cursorNameTopPosition, color: 'white', "background-color": 'red', display: 'block'});
+		$(cursorNameElement).css({left: cursorNameLeftPosition,top: cursorNameTopPosition, display: 'block'});
 		
-		clearTimeout(timeToHideCursorName);
-		timeToHideCursorName = setTimeout(function(){
+		clearTimeout(timeToHideCursorName[data.new_val.username]);
+		timeToHideCursorName[data.new_val.username] = setTimeout(function(){
 			$(cursorNameElement).css({'display': 'none'});
 		},2000);
 		
-
-
 	}
 });
 
 
 //when cursor position change
-myCodeMirror.on('cursorActivity',function(cm){
+myCodeMirror.getDoc().on('cursorActivity',function(cm){
 	var cursor = cm.getCursor();
 	cursor['username']=username;
 	cursor['fileURL']=fileURL;
 
 	//static projectID, will change to dynamic later
 	cursor['projectID']='112c12a8-53df-4ac0-a57a-f4b3f14401f4';		
-
 	socket.emit('cursor-update',cursor);
 });
 
@@ -76,8 +128,8 @@ myCodeMirror.on('change',function(cm,ob){
 		socket.emit('document-update',ob);
 	}
 
-	clearTimeout(timeToSyncRethinkDB);
-	timeToSyncRethinkDB = setTimeout(function (){
+	/*clearTimeout(timeToSyncRethinkDB);
+	timeToSyncRethinkDB = setTimeout(function (){*/
 		var date = new Date();
 		var dateFormated = FormatDate(date);
 		var message = {
@@ -86,7 +138,7 @@ myCodeMirror.on('change',function(cm,ob){
 			lastModified: username,
 			timeStamp: dateFormated};
 		socket.emit('document-save',message);
-	},1000);
+	/*},1000);*/
 });	
 
 function FormatDate(date){
@@ -117,6 +169,7 @@ function FormatDate(date){
 
 //when receiving input from other partners
 function HandleDocumentComing(data){
+	
 	var fileId = data.new_val.id;
 	var userUpdated = data.new_val.lastModified; //user make this event
 
@@ -125,8 +178,9 @@ function HandleDocumentComing(data){
 		var valueToAppend = data.new_val.text;
 		var appendPosition = {'from': data.new_val.from, 'to': data.new_val.to};
 		var documentOrigin = data.new_val.origin; //input, paste, cut, setValue ...
-
+		
 		myCodeMirror.getDoc().replaceRange(valueToAppend,appendPosition.from,appendPosition.to,documentOrigin);
+		
 	}
 }
 
@@ -140,19 +194,11 @@ $.ajax({
 	}
 });
 
-//ask server to receive all cursor is active
-$.ajax({
-	url: '/getCursor/'+username,
-	success: function(result, status,xhr){
-		if (result != username)
-		{
-			//CodeMirror Cursor style
-			var cursorContent=
-			'<div class="CodeMirror-cursors" id="'+result+'">\n\t'+
-				'<div class="CodeMirror-cursor" style="left: 4px; top: 0px; height: 15px;">&nbsp;</div>\n'+
-				'<div class="cursor-name" style="left: 4px; top: 0px; height: 15px; display:none">'+result+'</div>\n'+
-			'</div>';
-			$('.CodeMirror-lines div:first').prepend(cursorContent);
-		}
-	}
-});
+function getSelectedRange(){
+	return {from: myCodeMirror.getCursor(true), to: myCodeMirror.getCursor(false)};
+}
+
+function autoFormatSelection(){
+	var range = getSelectedRange();
+	myCodeMirror.autoFormatRange(range.from,range.to);
+}

@@ -20,7 +20,9 @@
     "tests"
   ],
   "dependencies": {
-    "codemirror": "^5.24.0",
+    "bootstrap": "boostrap#^3.3.7",
+    "codemirror": "^5.25.0",
     "jquery": "^3.1.1",
+    "codemirror-formatting": "*"
   }
 }

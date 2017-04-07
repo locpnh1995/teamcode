@@ -60,7 +60,7 @@ function createTerminal() {
   protocol = (location.protocol === 'https:') ? 'wss://' : 'ws://';
   socketURL = protocol + location.hostname + ((location.port) ? (':' + location.port) : '') + '/terminals/';
   containerId = "9fbee293690ffb6e477be3b982f41065db4cdf3c5750470fcd3c9fdf0565f270";
-  socketDockerURL = protocol + location.hostname + ':4243'  + '/containers/' + containerId + '/attach/ws?logs=1&stdin=1&stderr=1&stdout=1&stream=1';
+  socketDockerURL = protocol + '192.168.200.105:4243'  + '/containers/' + containerId + '/attach/ws?logs=1&stdin=1&stderr=1&stdout=1&stream=1';
   console.log('this is' + socketDockerURL);  
   term.open(terminalContainer);
   term.fit();
