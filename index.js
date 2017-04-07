@@ -19,7 +19,7 @@ var colorList = ['#ff0000','#8c8c08','#3faf1a','#af6e1a','#5d13ad','#960a91','#9
 var colorListIndex=0;
 
 //setup({host: ,databaseName: ,port: })
-db.setup({host: 'teamcode.me', databaseName: 'teamcode',port: 28015});
+db.setup({host: 'localhost', databaseName: 'teamcode',port: 28015});
 
 
 //route root page
