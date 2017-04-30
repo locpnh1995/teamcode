@@ -40,7 +40,7 @@ app.use(session({
 app.use('/bootstrap',express.static(__dirname+'/bower_components/bootstrap/dist'));
 app.use('/jquery',express.static(__dirname+'/bower_components/jquery/dist'));
 
-app.use(express.static(__dirname+'/web'));
+
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -110,7 +110,6 @@ app.get('/login',function(req,res){
 
 //for socketio
 var io = require('socket.io').listen(app.listen(expressPort));
-var fileURL = 'index.js';
 
 //determine RethinkDB is listening to any change on some table
 var isDBListening=false;
@@ -127,16 +126,6 @@ db.setup({host: host, databaseName: 'teamcode',port: 28015});
 //route root page
 app.get('/',function(req,res){
 	res.sendFile(__dirname+'/index.html')
-});
-
-
-//route get File
-app.get('/get/:fileURL',function(req,res){
-	var fileURL = req.params.fileURL;
-	db.get('edit',fileURL,function(err,fileContent){
-		res.send(fileContent);
-	});
-	
 });
 
 //static route
