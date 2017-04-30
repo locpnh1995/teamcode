@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Apr 08, 2017 at 03:38 AM
+-- Generation Time: Apr 30, 2017 at 01:09 AM
 -- Server version: 5.7.17-0ubuntu0.16.04.1
 -- PHP Version: 7.0.15-0ubuntu0.16.04.4
 
@@ -80,7 +80,7 @@ CREATE TABLE `users` (
   `first_name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `last_name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `email` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `username` varchar(128) COLLATE utf8_unicode_ci NOT NULL,
+  `username` varchar(128) COLLATE utf8_unicode_ci DEFAULT NULL,
   `algorithm` varchar(128) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'md5',
   `salt` varchar(128) COLLATE utf8_unicode_ci DEFAULT NULL,
   `password` varchar(128) COLLATE utf8_unicode_ci NOT NULL,
@@ -89,14 +89,6 @@ CREATE TABLE `users` (
   `created_at` datetime NOT NULL,
   `updated_at` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
---
--- Dumping data for table `users`
---
-
-INSERT INTO `users` (`id`, `first_name`, `last_name`, `email`, `username`, `algorithm`, `salt`, `password`, `is_active`, `last_login`, `created_at`, `updated_at`) VALUES
-(3, NULL, NULL, 'locpnh1995@gmail.com', 'loc', 'md5', 'd608d3427941bd82a1f804f197697386', 'ca3e97f87574d62e2e1a23942b5e143e', 1, NULL, '2017-04-03 03:59:22', NULL),
-(4, NULL, NULL, 'donguyen@gmail.com', 'do', 'md5', '7f1c13faf66b8aea286e9479e04ea032', '796030466ee716ca92fa37a89070ca7e', 1, NULL, '2017-04-03 03:59:22', NULL);
 
 --
 -- Indexes for dumped tables
@@ -156,7 +148,7 @@ ALTER TABLE `projects`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
 --
 -- Constraints for dumped tables
 --

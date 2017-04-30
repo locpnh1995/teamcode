@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<script type="text/javascript" src="/jquery/jquery.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="/bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="/bootstrap/css/bootstrap-theme.min.css">
+	<script type="text/javascript" src="/bootstrap/js/bootstrap.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="css/main.css">
+	
+	<title>Authenticate Me !</title>
+</head>
+<body>
+	<div class="container table">
+		<div class="row table-cell">
+			<div class="col-md-2"></div>
+			<div id="login-form" class="col-md-8">
+				<h1 class="text-center h1-shadow">TeamCode Register <span class="blinking-cursor">&marker;</span></h1>
+				<form action="/register" method=POST>
+					<div class="form-group">
+						<div class="input-group">
+							<span class="input-group-addon"><i class="glyphicon glyphicon-envelope"></i></span>
+							<input class="form-control" type="email" name="email" placeholder="Email" required autofocus />	
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="input-group">
+							<span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+							<input class="form-control" type="password" name="password" placeholder="Password" required/>
+						</div>
+					</div>
+					<div class="form-group">
+						<button class="form-control btn btn-primary">Register</button>
+					</div>
+				</form>
+				<div class="form-group text-center">
+					<span class="glyphicon glyphicon-question-sign"></span> Already have an accout ? <a href="/login">Log in</a>
+				</div>
+			</div>
+			<div class="col-md-2"></div>
+		</div>
+
+	</div>
+	<div class="overlay"></div>
+</body>
+</html>

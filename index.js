@@ -1,12 +1,114 @@
-
+const host = 'teamcode.me'
 
 //setting environment variables
 
 var express = require('express');
 const util = require('util'); //to inspect all property of Object
 var app = express();
-var expressPort = 2601;
+var expressPort = 8888;
 
+//for passport js
+var session = require('express-session');
+var bodyParser = require('body-parser');
+var passport = require('passport');
+var md5 = require('md5');
+
+
+//custom mysql with user
+var mysqldb = require ('./lib/mysqldb.js');
+var mysql = new mysqldb();
+const USER_TABLE = 'users';
+
+mysql.setup({
+	host: host,
+	user: 'loc',
+	password:'12341234',
+	database: 'teamcode'});
+
+var User = require('./models/User.js');
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+var urlencodedParser = bodyParser.urlencoded({ extended: false })
+
+app.use(session({
+  secret : "secret",
+  saveUninitialized: true,
+  resave: true
+}))
+
+app.use('/bootstrap',express.static(__dirname+'/bower_components/bootstrap/dist'));
+app.use('/jquery',express.static(__dirname+'/bower_components/jquery/dist'));
+
+app.use(express.static(__dirname+'/web'));
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+passport.serializeUser(function(user, done) {
+	done(null, user.email);
+});
+
+passport.deserializeUser(function(email, done) {
+  mysql.findByEmail(email, function(err, user) {
+    done(null, user);
+  });
+});
+
+
+var LocalStrategy = require('passport-local').Strategy;
+
+passport.use(new LocalStrategy(  
+	function(email, password, done) {
+
+		var tempUser = new User();
+		mysql.findByEmail(email,function(err,user){
+			if (user !=null)
+			{
+				tempUser.initial(user);
+				if (tempUser.CheckPassword(password))
+					return done(null,user);
+				else
+				{
+					return done(null,false);
+				}
+
+			}
+			else
+			{
+				return done(null,false);
+			}
+		});
+	}
+));
+
+var loginMiddleware = passport.authenticate('local', { successRedirect: '/success',
+                                   failureRedirect: '/register' });
+
+app.post('/login',loginMiddleware);
+
+app.post('/register',urlencodedParser,function(req,res){
+	if(!req.body)	
+		return res.sendStatus(404);
+	mysql.insert(req,USER_TABLE);
+	res.send('Your account has been created. Try to <a href="/login">Login</a>');
+	
+});
+
+app.get('/success',function(req,res){
+	res.send('thanh cong');
+});
+
+app.get('/register',function(req,res){
+	res.sendFile(__dirname+'/web/views/register.html')
+});
+
+app.get('/login',function(req,res){
+	res.sendFile(__dirname+'/web/views/login.html')
+});
+
+
+//for socketio
 var io = require('socket.io').listen(app.listen(expressPort));
 var fileURL = 'index.js';
 
@@ -19,7 +121,7 @@ var colorList = ['#ff0000','#8c8c08','#3faf1a','#af6e1a','#5d13ad','#960a91','#9
 var colorListIndex=0;
 
 //setup({host: ,databaseName: ,port: })
-db.setup({host: 'localhost', databaseName: 'teamcode',port: 28015});
+db.setup({host: host, databaseName: 'teamcode',port: 28015});
 
 
 //route root page
@@ -44,66 +146,6 @@ app.use('/nodejs',express.static(__dirname+'/node_modules'));
 app.use('/css',express.static(__dirname+'/customCSS'));
 app.use('/emmet',express.static(__dirname+'/emmet'));
 app.use('/csslintjs',express.static(__dirname+'/csslintjs'));
-/*
-
-//login
-var session = require('express-session');
-var bodyParser = require('body-parser');
-var passport = require('passport');
-
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
-
-app.use(session({
-  secret : "secret",
-  saveUninitialized: true,
-  resave: true
-}))
-
-app.use(passport.initialize());
-app.use(passport.session());
-
-router.route('/login')
-    .get(function (req, res) {
-        res.render('login', {
-            'title': 'Log in'
-        })
-    })
-    .post('/login', passport.authenticate('local', { successRedirect: '/', failureRedirect:'/login' }));
-
-var LocalStrategy = require('passport-local').Strategy;
-var passport = require('passport');
-var bcrypt = require('bcrypt');
-
-passport.serializeUser(function(user, done) {
-    done(null, user.id);
-});
-
-passport.deserializeUser(function(id, done) {
-    db.user.findById(id).then(function (user) {
-        done(null, user);
-    }).catch(function (err) {
-        console.log(err);
-    })
-});
-
-passport.use(new LocalStrategy(
-    function (username, password, done) {
-        db.user.find({where : {
-            username : username
-        }}).then(function (user) {
-            bcrypt.compare(password, user.password, function (err, result) {
-                if (err) { return done(err); }
-                if(!result) {
-                    return done(null, false, { message: 'Sai thông tin username hoặc password' });
-                }
-                return done(null, user);
-            })
-        }).catch (function (err) {
-            return done(err);
-        })
-    }
-))*/
 
 var clients ={};
 //setting socket

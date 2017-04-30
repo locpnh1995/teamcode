@@ -52,7 +52,6 @@ socket.on('connect',function(){
 
 socket.on ('appendCursors',function(cursors){
 	var cursor;
-	console.log(cursors);
 	for(i=0; i<cursors.length; i++)
 	{
 		cursor = cursors[i];
