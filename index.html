@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="myApp" ng-controller="mainController as vm">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>{{ vm.title }}</title>
+    <base href="/front-end_teamcode/">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="assets/js/jquery.particleground.min.js"></script>
+    <link rel="stylesheet" href="assets/css/style.css">
+
+    <!--<link rel="stylesheet" href="node_modules/angular-material/angular-material.css">-->
+    <!--Compiled and minified CSS-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.2/css/materialize.min.css">
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.2/js/materialize.min.js"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <script src="assets/js/script.js"></script>
+
+
+    <script src="node_modules/angular/angular.min.js"></script>
+    <script src="node_modules/angular-aria/angular-aria.min.js"></script>
+    <script src="node_modules/angular-animate/angular-animate.min.js"></script>
+    <script src="node_modules/angular-cookies/angular-cookies.min.js"></script>
+    <script src="node_modules/angular-sanitize/angular-sanitize.min.js"></script>
+    <script src="node_modules/@uirouter/angularjs/release/angular-ui-router.min.js"></script>
+    <!--<script src="node_modules/angular-material/angular-material.js"></script>-->
+
+</head>
+<body>
+<div ui-view="root"></div>
+
+<script src="app/app.js"></script>
+<script src="app/controllers/controllers.js"></script>
+<script src="app/controllers/maincontroller.js"></script>
+<script src="app/controllers/logincontroller.js"></script>
+<script src="app/controllers/registercontroller.js"></script>
+<script src="app/directives/directives.js"></script>
+<script src="app/services/services.js"></script>
+<script src="app/services/loginservice.js"></script>
+<script src="app/services/registerservice.js"></script>
+</body>
+</html>

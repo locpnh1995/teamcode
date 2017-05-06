@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<script type="text/javascript" src="/jquery/jquery.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="/bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="/bootstrap/css/bootstrap-theme.min.css">
+	<script type="text/javascript" src="/bootstrap/js/bootstrap.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="css/main.css">
+	
+	<title>Authenticate Me !</title>
+</head>
+<body>
+
+	<div class="container table">
+		<div class="row table-cell">
+			<div class="col-md-2"></div>
+			<div id="login-form" class="col-md-8">
+				<h1 class="text-center h1-shadow">TeamCode Login <span class="blinking-cursor">&marker;</span></h1>
+				<form action="/login" method=POST>
+					<div class="form-group">
+						<div class="input-group">
+							<span class="input-group-addon"><i class="glyphicon glyphicon-envelope"></i></span>
+							<input class="form-control" type="text" name="username" placeholder="Username" autofocus/>
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="input-group">
+							<span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+							<input class="form-control" type="password" name="password" placeholder="Password" />
+						<span class="input-group-btn"><button class="btn btn-primary">Login</button></span>
+						</div>
+					</div>
+				</form>
+				<div class="form-group text-center">
+					<span class="glyphicon glyphicon-question-sign"></span> Don't have an account ? <a href="/register">Join us</a>
+				</div>
+			</div>
+			<div class="col-md-2"></div>
+		</div>
+
+	</div>
+	<div class="overlay"></div>
+</body>
+</html>

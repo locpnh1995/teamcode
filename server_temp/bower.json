@@ -1,0 +1,28 @@
+{
+  "name": "teamcode",
+  "description": "the beginner of khoa luan",
+  "main": "index.js",
+  "authors": [
+    "HLoc"
+  ],
+  "license": "ISC",
+  "keywords": [
+    "code",
+    "realtime",
+    "collaboration"
+  ],
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "boostrap#^3.3.7",
+    "codemirror": "^5.25.0",
+    "jquery": "^3.1.1",
+    "codemirror-formatting": "*"
+  }
+}

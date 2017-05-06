@@ -1,0 +1,51 @@
+<div class="row login-page">
+    <div class="col s12">
+        <form name="formLogin" ng-submit="vm.login()" class="login-form center">
+            <div class="card-panel">
+                <div class="card-content">
+                    <span class="card-title"><h3>Login</h3></span>
+                    <div class="row">
+                        <div class="input-field col s12">
+                            <input id="email"
+                                   type="text"
+                                   name="email"
+                                   ng-required="true"
+                                   ng-maxlength="100"
+                                   ng-model="user.email"
+                                   data-length="100"
+                                   ng-pattern='/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/'>
+                            <label for="email">Email</label>
+                        </div>
+                        <div class="input-field col s12">
+                            <input id="password"
+                                   type="password"
+                                   name="password"
+                                   ng-maxlength="50"
+                                   data-length="50"
+                                   ng-model="user.password"
+                                   ng-required="true">
+                            <label for="password">Password</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="input-field col s12">
+                            <button class="btn waves-effect waves-light light-blue col s12"
+                                    type="submit"
+                                    name="action"
+                                    ng-disabled="formLogin.$invalid">
+                                Login
+                            </button>
+                        </div>
+                    </div>
+                    <p class="center">Don't have an account? <a ui-sref="blank.register">Sign Up</a></p>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $('input#email, input#password').characterCounter();
+    });
+</script>

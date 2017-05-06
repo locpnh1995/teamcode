@@ -1,0 +1,26 @@
+<nav class="transparent" style="box-shadow: none;">
+    <div class="nav-wrapper">
+        <a ui-sref="structure.homepage" class="brand-logo"> <img src="assets/images/logo-3.png" class="responsive-img img-logo" alt=""></a>
+        <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
+        <ul class="right hide-on-med-and-down">
+            <li><a ui-sref="structure.about">About</a></li>
+            <li><a ui-sref="blank.register">Register</a></li>
+            <li><a ui-sref="blank.login">Login</a></li>
+        </ul>
+        <ul class="side-nav" id="mobile-demo">
+            <li><a ui-sref="blank.register"><i class="material-icons left">person_add</i>Register</a></li>
+            <li><a ui-sref="blank.login"><i class="material-icons left">person</i>Login</a></li>
+            <li><a ui-sref="structure.about"><i class="material-icons">info</i>About</a></li>
+        </ul>
+    </div>
+</nav>
+<script>
+    $(document).ready(function () {
+        $(".button-collapse").sideNav({
+            menuWidth: 250, // Default is 300
+            edge: 'left', // Choose the horizontal origin
+            closeOnClick: true, // Closes side-nav on <a> clicks, useful for Angular/Meteor
+            draggable: true // Choose whether you can drag to open on touch screens
+        });
+    });
+</script>

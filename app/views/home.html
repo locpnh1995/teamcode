@@ -1,0 +1,17 @@
+<div id="particles">
+    <div id="intro">
+        <h1><span id="cursor">Welcome to TeamCode</span></h1>
+        <p class="real-time">IDE Real-time Online</p>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $('#particles').particleground({
+            dotColor: '#b0bec5',
+            lineColor: '#b0bec5'
+        });
+        $('#intro').css({
+            'margin-top': -($('#intro').height() / 2)
+        });
+    });
+</script>

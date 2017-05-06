@@ -1,0 +1,20 @@
+{
+  "name": "frontend-teamcode",
+  "description": "Front-end of Teamcode",
+  "main": "index.html",
+  "authors": [
+    "donguyen"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "frontend"
+  ],
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

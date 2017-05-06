@@ -1,0 +1,31 @@
+{
+  "name": "teamcode",
+  "version": "1.0.0",
+  "description": "the beginner of khoa luan",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"abc\";"
+  },
+  "keywords": [
+    "code",
+    "realtime",
+    "collaboration"
+  ],
+  "author": "HLoc",
+  "license": "ISC",
+  "dependencies": {
+    "emmet": "^1.6.3",
+    "express": "^4.14.1",
+    "rethinkdb": "^2.3.3",
+    "socket.io": "^1.7.3",
+    "xterm": "^2.4.0",
+    "body-parser": "^1.17.1",
+    "express-session": "^1.15.2",
+    "express": "^4.15.2",
+    "md5": "^2.2.1",
+    "nodemon": "^1.11.0",
+    "mysql": "^2.13.0",
+    "passport-local": "^1.0.0",
+    "passport": "^0.3.2"
+  }
+}

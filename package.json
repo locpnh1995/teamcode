@@ -1,0 +1,23 @@
+{
+  "name": "frontend-teamcode",
+  "version": "1.0.0",
+  "description": "Front-end of Teamcode",
+  "main": "index.html",
+  "scripts": {
+    "test": "hello"
+  },
+  "keywords": [
+    "frontend"
+  ],
+  "author": "donguyen",
+  "license": "MIT",
+  "dependencies": {
+    "@uirouter/angularjs": "^1.0.0",
+    "angular": "^1.6.4",
+    "angular-animate": "^1.6.4",
+    "angular-aria": "^1.6.4",
+    "angular-cookies": "^1.6.4",
+    "angular-material": "^1.1.4",
+    "angular-sanitize": "^1.6.4"
+  }
+}
