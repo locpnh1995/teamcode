@@ -14,11 +14,11 @@ function registerService($http, $cookies, $q) {
     function register(data) {
         var deferred = $q.defer();
         $http({
-            url: '',
+            url: '/teamcode/server/register',
             method: 'POST',
             data: data
         }).then(function success(response) {
-            deferred.resolve(response);
+            deferred.resolve(response.data);
         }, function error(error) {
             deferred.reject(error);
         });
