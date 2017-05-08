@@ -10,27 +10,59 @@ angular
         'app.services'
     ])
     .config(config);
+// .run(run);
 
+// function run($rootScope, $state, userService) {
+//     console.log("ok");
+//     $rootScope.$on("$stateChangeStart", function (event, toState, toParams, fromState, fromParams) {
+//         console.log(toState);
+//         userService.authentication().then(function (response) {
+//             if (toState.authenticate && (response.code == 401 || response.code == 404)) {
+//                 // User isn’t authenticated
+//                 $state.transitionTo("loggedIn.blank.login");
+//                 event.preventDefault();
+//             }
+//         });
+//     });
+// }
 function config($stateProvider, $locationProvider, $urlRouterProvider) {
-    $locationProvider.html5Mode(true);
     $stateProvider
-        .state('blank', {
+        .state('loggedIn', {
             abstract: true,
             views: {
                 'root': {
-                    templateUrl: 'app/views/blank.html'
+                    template: '<div ui-view="root"></div>',
+                    // controller: function ($rootScope, userService, $state) {
+                    //     console.log("abc");
+                    //     $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams){
+                    //         console.log(toState);
+                    //         console.log("abc");
+                    //     });
+                    // }
                 }
-            }
+            },
+            // resolve: {
+            //     authentication: _redirectIfNotAuthenticated
+            // }
+            // authenticate: true
         })
-        .state('structure', {
+        .state('loggedIn.blank', {
             abstract: true,
             views: {
                 'root': {
-                    templateUrl: 'app/views/structure.html'
+                    templateUrl: 'app/views/blank.html',
                 }
             }
         })
-        .state('blank.login', {
+        .state('loggedIn.structure', {
+            abstract: true,
+            views: {
+                'root': {
+                    templateUrl: 'app/views/structure.html',
+                }
+            }
+        })
+        .state('loggedIn.blank.login', {
             url: '/login',
             views: {
                 '': {
@@ -40,7 +72,7 @@ function config($stateProvider, $locationProvider, $urlRouterProvider) {
                 }
             }
         })
-        .state('blank.register', {
+        .state('loggedIn.blank.register', {
             url: '/register',
             views: {
                 '': {
@@ -50,7 +82,7 @@ function config($stateProvider, $locationProvider, $urlRouterProvider) {
                 }
             }
         })
-        .state('structure.about', {
+        .state('loggedIn.structure.about', {
             url: '/about',
             views: {
                 'header': {
@@ -59,9 +91,12 @@ function config($stateProvider, $locationProvider, $urlRouterProvider) {
                 'content': {
                     templateUrl: 'app/views/about.html'
                 }
+            },
+            resolve: {
+                authentication: _redirectIfNotAuthenticated
             }
         })
-        .state('structure.homepage', {
+        .state('loggedIn.structure.homepage', {
             url: '/',
             views: {
                 'header': {
@@ -72,4 +107,44 @@ function config($stateProvider, $locationProvider, $urlRouterProvider) {
                 }
             }
         });
+    // Send to login if the URL was not found
+    $urlRouterProvider.otherwise("/login");
+
+    _redirectIfNotAuthenticated.$inject = ['$q', '$state', 'userService', '$timeout'];
+    function _redirectIfNotAuthenticated($q, $state, userService, $timeout) {
+        var deferred = $q.defer();
+        userService.authentication().then(function (response) {
+            if (response.code == 200) {
+                deferred.resolve();
+            } else {
+                $timeout(function () {
+                    $state.go('loggedIn.blank.login');
+                });
+                deferred.reject();
+            }
+        })
+
+        return deferred.promise;
+    }
+
+    // authentication.$inject = ['$q', 'userService', '$state', '$timeout'];
+    // function authentication($q, userService, $state, $timeout) {
+    //     var promise =  $q.when(userService.authentication().then(function (response) {
+    //         if (response.code == 401) {
+    //             return;
+    //         }
+    //     });
+    //     return promise;
+    // userService.authentication().then(function (response) {
+    //     if (response.code == 200) {
+    //         return $q.when();
+    //     }
+    //     else {
+    //         $timeout(function () {
+    //             $state.go('loggedIn.blank.login');
+    //         });
+    //         return $q.reject();
+    //     }
+    // });
+//}
 }

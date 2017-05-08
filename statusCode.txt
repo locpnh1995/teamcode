@@ -1,0 +1,13 @@
+200 - Thành công
+250 - Lỗi không xác định
+201 - Đăng ký thành công
+210 - Đăng ký thất bại
+211 - Email đã tồn tại
+216 - Password và Re-Password không trùng khớp
+204 - Không trả về gì hết
+212 - Đăng nhập thành công
+213 - Đăng nhập thất bại
+214 - Email không tồn tại
+215 - Password không chính xác
+401 - Token hết hạn
+216 - Cập nhật thời gian token không thành công
