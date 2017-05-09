@@ -78,7 +78,7 @@ function config($stateProvider, $locationProvider, $urlRouterProvider) {
             }
         });
     // Send to login if the URL was not found
-    $urlRouterProvider.otherwise("/login");
+    $urlRouterProvider.otherwise("/");
 
     _redirectIfAuthenticated.$inject = ['$q', '$state', 'userService', '$timeout'];
     function _redirectIfAuthenticated($q, $state, userService, $timeout) {

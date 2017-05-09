@@ -87,12 +87,7 @@ function userService($http, $cookies, $q) {
 
     function logout() {
         var deferred = $q.defer();
-        var data = {email: $cookies.get('emailTeamCode'), token: $cookies.get('tokenTeamCode')};
-        $http({
-            url: '/logout',
-            method: 'POST',
-            data: data
-        }).then(function success(response) {
+        $http.post('/logout').then(function success(response) {
             if (response.data.code == 200) {
                 $cookies.remove('tokenTeamCode');
                 $cookies.remove('emailTeamCode');
@@ -106,13 +101,7 @@ function userService($http, $cookies, $q) {
 
     function authentication() {
         var deferred = $q.defer();
-        var data = {email: $cookies.get('emailTeamCode'), token: $cookies.get('tokenTeamCode')};
-        console.log(data);
-        $http({
-            url: '/authentication',
-            method: 'POST',
-            data: data
-        }).then(function success(response) {
+        $http.post('/authentication').then(function success(response) {
             deferred.resolve(response.data);
         }, function error(error) {
             services.isAuthenticated = false;
