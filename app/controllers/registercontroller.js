@@ -16,7 +16,7 @@ function registerController($scope, userService, $state, $timeout) {
             userService.register($scope.user)
                 .then(function (response) {
                     if (response.code == 201) { // register success
-                        Materialize.toast('Register success!', 4000);
+                        Materialize.toast('Register success!', 2000);
                         $timeout(function () {
                             $state.go('blank.login');
                         }, 2000);

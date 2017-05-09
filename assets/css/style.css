@@ -87,6 +87,10 @@ p.real-time {
     font-size: 30px;
 }
 
+ul#dropdown.dropdown-content li>a {
+    color: black;
+}
+
 @-webkit-keyframes blink {
     0% {
         opacity: 1.0;

@@ -2,10 +2,16 @@ angular
     .module('app.controllers.maincontroller', [])
     .controller('mainController', mainController);
 
-mainController.$inject = ['$scope', 'userService', '$state'];
-function mainController($scope, loginService, $state) {
+mainController.$inject = ['$scope', 'userService', '$state', '$timeout'];
+function mainController($scope, userService, $state, $timeout) {
     var vm = this;
     vm.title = 'TeamCode';
+
+    vm.user = userService;
+    // vm.isAuthenticated = userService.isAuthenticated();
+    // vm.email = userService.getEmail();
+    // console.log(userService.isAuthenticated());
+    // console.log(userService.getEmail());
 
     vm.logout = logout;
 
@@ -13,7 +19,7 @@ function mainController($scope, loginService, $state) {
         userService.logout()
             .then(function success(response) {
                 if (response.code == 200) {
-                    Materialize.toast('Logout successful!', 4000);
+                    Materialize.toast('Logout successful!', 2000);
                     $timeout(function () {
                         $state.go('blank.login');
                     }, 2000);

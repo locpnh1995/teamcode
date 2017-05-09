@@ -8,6 +8,7 @@ function userService($http, $cookies, $q) {
         email: null,
         name: null,
         image: null,
+        isAuthenticated: isAuthenticated,
         getEmail: getEmail,
         setEmail: setEmail,
         getName: getName,
@@ -20,8 +21,17 @@ function userService($http, $cookies, $q) {
         authentication: authentication
     }
 
+    function isAuthenticated() {
+        var token = $cookies.get('tokenTeamCode');
+        var email = $cookies.get('emailTeamCode');
+        if (token && email) {
+            return true;
+        }
+        return false;
+    }
+
     function getEmail() {
-        return services.email;
+        return $cookies.get('emailTeamCode');
     }
 
     function setEmail(newEmail) {
@@ -54,7 +64,6 @@ function userService($http, $cookies, $q) {
             console.log(response);
             $cookies.put('tokenTeamCode', response.data.token, {'expires': new Date(response.data.expires)});
             $cookies.put('emailTeamCode', response.data.email, {'expires': new Date(response.data.expires)});
-            // services.setEmail(response.data.email);
             deferred.resolve(response.data);
         }, function error(error) {
             deferred.reject(error);
@@ -76,8 +85,9 @@ function userService($http, $cookies, $q) {
         return deferred.promise;
     }
 
-    function logout(data) {
+    function logout() {
         var deferred = $q.defer();
+        var data = {email: $cookies.get('emailTeamCode'), token: $cookies.get('tokenTeamCode')};
         $http({
             url: '/logout',
             method: 'POST',
@@ -85,6 +95,7 @@ function userService($http, $cookies, $q) {
         }).then(function success(response) {
             if (response.data.code == 200) {
                 $cookies.remove('tokenTeamCode');
+                $cookies.remove('emailTeamCode');
             }
             deferred.resolve(response.data);
         }, function error(error) {
@@ -104,6 +115,7 @@ function userService($http, $cookies, $q) {
         }).then(function success(response) {
             deferred.resolve(response.data);
         }, function error(error) {
+            services.isAuthenticated = false;
             deferred.reject(error);
         });
         return deferred.promise;
