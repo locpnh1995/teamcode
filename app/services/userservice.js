@@ -8,7 +8,10 @@ function userService($http, $cookies, $q) {
         email: null,
         name: null,
         image: null,
+        token: null,
         isAuthenticated: isAuthenticated,
+        getToken: getToken,
+        setToken: setToken,
         getEmail: getEmail,
         setEmail: setEmail,
         getName: getName,
@@ -18,7 +21,22 @@ function userService($http, $cookies, $q) {
         login: login,
         register: register,
         logout: logout,
-        authentication: authentication
+        authentication: authentication,
+        createProject: createProject
+    }
+
+    function createProject(data) {
+        var deferred = $q.defer();
+        $http({
+            url: '/projects',
+            method: 'POST',
+            data: data
+        }).then(function (response) {
+            deferred.resolve(response.data);
+        }, function (error) {
+            deferred.reject(error);
+        });
+        return deferred.promise;
     }
 
     function isAuthenticated() {
@@ -28,6 +46,14 @@ function userService($http, $cookies, $q) {
             return true;
         }
         return false;
+    }
+
+    function getToken() {
+        return $cookies.get('tokenTeamCode');
+    }
+
+    function setToken(newToken) {
+        services.token = newToken;
     }
 
     function getEmail() {
@@ -61,7 +87,6 @@ function userService($http, $cookies, $q) {
             method: 'POST',
             data: data
         }).then(function success(response) {
-            console.log(response);
             $cookies.put('tokenTeamCode', response.data.token, {'expires': new Date(response.data.expires)});
             $cookies.put('emailTeamCode', response.data.email, {'expires': new Date(response.data.expires)});
             deferred.resolve(response.data);
@@ -101,12 +126,17 @@ function userService($http, $cookies, $q) {
 
     function authentication() {
         var deferred = $q.defer();
-        $http.post('/authentication').then(function success(response) {
-            deferred.resolve(response.data);
-        }, function error(error) {
-            services.isAuthenticated = false;
-            deferred.reject(error);
-        });
+        $http.post('/authenticate')
+            .then(function success(response) {
+                var token = services.getToken();
+                var email = services.getEmail();
+                $cookies.put('tokenTeamCode', token, {'expires': new Date(response.data.expires)});
+                $cookies.put('emailTeamCode', email, {'expires': new Date(response.data.expires)});
+                deferred.resolve(response.data);
+            }, function error(error) {
+                services.isAuthenticated = false;
+                deferred.reject(error);
+            });
         return deferred.promise;
     }
 

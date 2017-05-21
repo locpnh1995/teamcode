@@ -76,6 +76,38 @@ function config($stateProvider, $locationProvider, $urlRouterProvider) {
                     templateUrl: 'app/views/home.html'
                 }
             }
+        })
+        .state('structure.dashboard', {
+            url: '/dashboard',
+            views: {
+                'header': {
+                    templateUrl: 'app/views/header.html'
+                },
+                'content': {
+                    templateUrl: 'app/views/dashboard.html',
+                    controller: 'dashboardController',
+                    controllerAs: 'vm'
+                }
+            },
+            resolve: {
+                redirectIfNotAuthenticated: _redirectIfNotAuthenticated
+            }
+        })
+        .state('structure.profile', {
+            url: '/profile',
+            views: {
+                'header': {
+                    templateUrl: 'app/views/header.html'
+                },
+                'content': {
+                    templateUrl: 'app/views/profile.html',
+                    controller: 'profileController',
+                    controllerAs: 'vm'
+                }
+            },
+            resolve: {
+                redirectIfNotAuthenticated: _redirectIfNotAuthenticated
+            }
         });
     // Send to login if the URL was not found
     $urlRouterProvider.otherwise("/");

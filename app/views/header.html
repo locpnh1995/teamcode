@@ -15,12 +15,11 @@
         </ul>
     </div>
     <!-- // Not Authenticated -->
-    <!-- Authenticated -->
 
-    <!-- Dropdown Structure -->
+    <!-- Authenticated -->
     <ul id="dropdown" class="dropdown-content">
-        <li><a href="#"><i class="material-icons left">assignment_ind</i>Profile</a></li>
-        <li><a href="#"><i class="material-icons left">dashboard</i>Dashboard</a></li>
+        <li><a ui-sref="structure.profile"><i class="material-icons left">assignment_ind</i>Profile</a></li>
+        <li><a ui-sref="structure.dashboard"><i class="material-icons left">dashboard</i>Dashboard</a></li>
         <li class="divider"></li>
         <li><a ng-click="vm.logout()"><i class="material-icons left">power_settings_new</i>Logout</a></li>
     </ul>
@@ -32,8 +31,8 @@
         </ul>
         <ul class="side-nav" id="mobile-demo">
             <li><a>{{ vm.user.getEmail() }}</a></li>
-            <li><a href="#"><i class="material-icons left">assignment_ind</i>Profile</a></li>
-            <li><a href="#"><i class="material-icons left">dashboard</i>Dashboard</a></li>
+            <li><a ui-sref="structure.profile"><i class="material-icons left">assignment_ind</i>Profile</a></li>
+            <li><a ui-sref="structure.dashboard"><i class="material-icons left">dashboard</i>Dashboard</a></li>
             <li><a ng-click="vm.logout()"><i class="material-icons left">power_settings_new</i>Logout</a></li>
         </ul>
     </div>

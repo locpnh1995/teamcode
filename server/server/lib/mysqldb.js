@@ -56,11 +56,10 @@ mysqldb.prototype.setup = function (config) {
 //	console.log("Connect successful to '"+this.name+"'\n",this.connection);
 };
 
-
 mysqldb.prototype.findUserByEmail = function (email, callback) {
 
-    var query = "select * from users where email=" + helper.AddAposttropheBeginEnd(email);
-    this.connection.query(query, function (err, result) {
+    var query = "SELECT * FROM users WHERE email = ?";
+    this.connection.query(query, [email], function (err, result) {
         // console.log(result);
         if (result.length > 0) {
             callback(false, result[0]);
@@ -80,9 +79,9 @@ mysqldb.prototype.findUserByEmail = function (email, callback) {
 
 mysqldb.prototype.findTokenByValue = function (value, callback) {
 
-    var query = "select * from tokens where value=" + helper.AddAposttropheBeginEnd(value);
+    var query = "SELECT * FROM tokens WHERE value = ?";
 
-    this.connection.query(query, function (err, result) {
+    this.connection.query(query, [value], function (err, result) {
         if (result.length > 0) {
             callback(false, result[0]);
         }
@@ -99,18 +98,16 @@ mysqldb.prototype.findTokenByValue = function (value, callback) {
 
 mysqldb.prototype.insertUser = function (req, callback) {
 
-    var email = helper.AddAposttropheBeginEnd(req.body.email);
+    var email = req.body.email;
     var salt = md5(new Date());
-    var password = helper.AddAposttropheBeginEnd(md5(req.body.password + salt));
-    salt = helper.AddAposttropheBeginEnd(salt); //addAposttrophe to insert in mysql
+    var password = md5(req.body.password + salt);
+    var created_at = helper.GetDateTime();
 
-    var created_at = helper.AddAposttropheBeginEnd(helper.GetDateTime());
-    var query = "INSERT INTO users (email, salt, password, created_at) values ("
-        + email + "," + salt + "," + password + "," + created_at + ")";
+    var query = "INSERT INTO users (email, salt, password, created_at) values (?, ?, ?, ?)";
 
-    this.connection.query(query, function (err, result) {
+    this.connection.query(query, [email, salt, password, created_at], function (err, result) {
         if (err) {
-            console.log('inserUser errors: ', err);
+            console.log(err);
             callback(err);
         }
         else {
@@ -126,14 +123,13 @@ mysqldb.prototype.insertToken = function (req, callback) {
     token.value = randtoken.generate(MAX_TOKEN_SIZE);
     token.expiresAt = helper.GetDateTimeAddMinutes(60);
 
-    var value = helper.AddAposttropheBeginEnd(token.value);
-    var userEmail = helper.AddAposttropheBeginEnd(token.userEmail);
-    var expires_at = helper.AddAposttropheBeginEnd(token.expiresAt);
+    var value = token.value;
+    var userEmail = token.userEmail;
+    var expires_at = token.expiresAt;
 
-    var query = "INSERT INTO tokens (value, user_email, expires_at) values (" + value + ","
-        + userEmail + "," + expires_at + ")";
+    var query = "INSERT INTO tokens (value, user_email, expires_at) values (?, ?, ?)";
 
-    this.connection.query(query, function (err, result) {
+    this.connection.query(query, [value, userEmail, expires_at], function (err, result) {
         if (err) {
             console.log(err);
             callback(err);
@@ -146,9 +142,9 @@ mysqldb.prototype.insertToken = function (req, callback) {
 
 mysqldb.prototype.deleteTokenByEmail = function (email, callback) {
 
-    var query = "DELETE FROM tokens WHERE user_email=" + helper.AddAposttropheBeginEnd(email);
+    var query = "DELETE FROM tokens WHERE user_email = ?";
 
-    this.connection.query(query, function (err, result) {
+    this.connection.query(query, [email], function (err, result) {
         if (err) {
             console.log(err);
             callback(err);
@@ -160,16 +156,16 @@ mysqldb.prototype.deleteTokenByEmail = function (email, callback) {
 };
 
 mysqldb.prototype.updateTokenExpiresAt = function (time, email, callback) {
+    var timeUpdate = helper.GetDateTimeAddMinutes(time);
+    var query = "UPDATE tokens SET expires_at = ? WHERE user_email = ?";
 
-    var query = "UPDATE tokens SET expires_at=" + helper.AddAposttropheBeginEnd(helper.GetDateTimeAddMinutes(60)) + " WHERE user_email=" + helper.AddAposttropheBeginEnd(email);
-
-    this.connection.query(query, function (err, result) {
+    this.connection.query(query, [timeUpdate, email], function (err, result) {
         if (err) {
             console.log(err);
             callback(err);
         }
         else {
-            callback(false, result);
+            callback(false, timeUpdate, result);
         }
     });
 };

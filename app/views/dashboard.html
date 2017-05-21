@@ -1,0 +1,66 @@
+<div class="btn-create">
+    <button type="button" data-target="modalCreateProject"
+            class="btn waves-effect waves-light grey darken-4 create-project">CREATE
+    </button>
+</div>
+
+<!-- Modal Structure -->
+<div id="modalCreateProject" class="modal modal-fixed-footer">
+    <div class="modal-content">
+        <h4>Environment</h4>
+        <div class="row">
+            <form class="col s12" name="formCreateEnv" ng-submit="vm.createEnv()">
+                <div class="row">
+                    <div class="input-field col s12">
+                        <input id="project_name"
+                               type="text"
+                               class="validate"
+                               ng-required="true"
+                               ng-maxlength="40"
+                               data-length="40"
+                               ng-model="vm.project.project_name">
+                        <label for="project_name">Project Name</label>
+                    </div>
+                    <div class="input-field col s12">
+                        <input type="radio"
+                               class="with-gap"
+                               id="lamp_stack"
+                               name="project_stack"
+                               value="lamp_stack"
+                               ng-model="vm.project.project_stack"/>
+                        <label for="lamp_stack">LAMP STACK</label>
+                    </div>
+                    <div class="input-field col 12">
+                        <input type="radio"
+                               class="with-gap"
+                               id="mean_stack"
+                               name="porject_stack"
+                               value="mean_stack"
+                               ng-model="vm.project.project_stack"/>
+                        <label for="mean_stack">MEAN STACK</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="input-field col s12">
+                        <button type="submit"
+                                class="col s12 btn blue waves-effect waves-light"
+                                ng-disabled="formCreateEnv.$invalid">CREATE
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="modal-action modal-close waves-effect waves-green btn-flat">CLOSE
+        </button>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        // the "href" attribute of .modal-trigger must specify the modal ID that wants to be triggered
+        $('.modal').modal();
+        $('input').characterCounter();
+    });
+</script>

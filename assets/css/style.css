@@ -11,7 +11,7 @@ html, body {
 
 .create-project {
     width: 150px;
-    height: 50px;
+    height: 50px !important;
 }
 
 .btn-create {

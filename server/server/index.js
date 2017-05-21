@@ -4,19 +4,19 @@ const host = 'localhost'
 var helperModule = require('./lib/TeamCodeHelper.js');
 var helper = new helperModule();
 
-var express = require('express');
-var path = require('path');
+const express = require('express');
+const path = require('path');
 
 const util = require('util'); //to inspect all property of Object
 var app = express();
 var expressPort = 8888;
 
 //for passport js
-var session = require('express-session');
-var bodyParser = require('body-parser');
-var cookieParser = require('cookie-parser');
+const session = require('express-session');
+const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
 // var passport = require('passport');
-var md5 = require('md5');
+const md5 = require('md5');
 
 
 //custom mysql with user
@@ -35,25 +35,27 @@ var User = require('./models/User.js');
 var Token = require('./models/Token.js');
 
 app.use(bodyParser.json());       // to support JSON-encoded bodies
-app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
-    extended: true
-}));
+app.use(bodyParser.urlencoded({extended: true}));   // to support URL-encoded bodies
+
 app.use(cookieParser());
 
 app.use('/assets', express.static(path.join(__dirname, '../../', 'assets')));
 app.use('/node_modules', express.static(path.join(__dirname, '../../', 'node_modules')));
 app.use('/app', express.static(path.join(__dirname, '../../', 'app')));
 
-app.get('/', function (req, res) {
-    // console.log(path.join(__dirname, '../../', 'index.html'));
-    // res.end("hello");
-    res.sendFile(path.join(__dirname, '../../', 'index.html'));
-})
+app.use(function (req, res, next) {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type, Authorization');
+    next();
+});
 
-app.post('/authentication', function (req, res) {
-    console.log(req.cookies);
+app.get('/', function (req, res) {
+    res.sendFile(path.join(__dirname, '../../', 'index.html'));
+});
+
+app.post('/authenticate', function (req, res) {
     mysql.findTokenByValue(req.cookies.tokenTeamCode, function (err, token) {
-        console.log(err, token);
         if (!err) {
             var tempToken = new Token();
             tempToken.initial(token);
@@ -63,20 +65,30 @@ app.post('/authentication', function (req, res) {
                 var now = new Date();
 
                 if (now.getTime() < expiresAt.getTime()) {
-                    mysql.updateTokenExpiresAt(60, tempToken.getUserEmail(), function (err) {
+                    mysql.updateTokenExpiresAt(60, tempToken.getUserEmail(), function (err, expires, result) {
                         if (!err) {
                             //handle something when it isn't error.
-                            res.send({code: 200, message: 'Your token is correct, match and available.'});
+                            res.json({
+                                code: 200,
+                                message: 'Your token is correct, match and available.',
+                                expires: expires
+                            });
                         }
                         else {
-                            res.send({code: 216, message: 'Error!'});
+                            res.json({
+                                code: 216,
+                                message: 'Error!'
+                            });
                         }
                     });
                     //res.send({code: 200, message: 'Your token is correct, match and available.'});
                     //res.send(helper.ToJSON(200, 'Your token is correct, match and available.'));
                 }
                 else {
-                    res.send({code: 401, message: 'Your token is expired or incorrect.'});
+                    res.json({
+                        code: 401,
+                        message: 'Your token is expired or incorrect.'
+                    });
                 }
             }
             /*else
@@ -85,7 +97,10 @@ app.post('/authentication', function (req, res) {
              }*/
         }
         else {
-            res.send({code: 404, message: 'Your token is not exists.'});
+            res.json({
+                code: 404,
+                message: 'Your token is not exists.'
+            });
             //res.send(helper.ToJSON(404, 'Your token is not exists.'));
         }
     });
@@ -102,20 +117,31 @@ app.post('/register', function (req, res) {
     else {
         mysql.findUserByEmail(req.body.email, function (err, result) {
             if (!err) {
-                res.send({code: 211, message: 'Email already exists!'});
+                res.json({
+                    code: 211,
+                    message: 'Email already exists!'
+                });
             }
             else {
                 if (req.body.password !== req.body.re_password || req.body.password == null || req.body.re_password == null) {
-                    res.send({code: 216, message: 'Password and Re-Password don\'t match'});
+                    res.json({
+                        code: 216,
+                        message: 'Password and Re-Password don\'t match'
+                    });
                 }
                 else {
                     mysql.insertUser(req, function (err, result) {
                         if (!err) {
-                            // console.log('Create email: ' + req.body.email + 'complete!');
-                            res.send({code: 201, message: 'Register successful!'});
+                            res.json({
+                                code: 201,
+                                message: 'Register successful!'
+                            });
                         }
                         else {
-                            res.send({code: 210, message: 'Register failed!'});
+                            res.json({
+                                code: 210,
+                                message: 'Register failed!'
+                            });
                         }
                     });
                 }
@@ -142,7 +168,7 @@ app.post('/login', function (req, res) {
                                 if (!err) {
                                     // res.send(helper.ToJSON(200, 'Your token is: ' + token));
                                     //handle duplicate token down here
-                                    res.send({
+                                    res.json({
                                         code: 200,
                                         message: 'Login successful!',
                                         token: token.value,
@@ -151,35 +177,39 @@ app.post('/login', function (req, res) {
                                     });
                                 }
                                 else {
-                                    res.send({code: 213, message: 'Login failed!'});
+                                    res.json({
+                                        code: 213,
+                                        message: 'Login failed!'
+                                    });
                                 }
                             });
                         }
                     });
                 }
                 else {
-                    res.send({code: 215, message: 'Password incorrect!'});
+                    res.json({
+                        code: 215,
+                        message: 'Password incorrect!'
+                    });
                 }
             }
             else {
-                res.send({code: 214, message: 'Email not found!'});
+                res.json({
+                    code: 214,
+                    message: 'Email not found!'
+                });
             }
         });
     }
 
 });
 
-
 app.post('/logout', function (req, res) {
 
     var request = require('request');
     var cookiesReq = 'emailTeamCode=' + req.cookies.emailTeamCode + '; tokenTeamCode=' + req.cookies.tokenTeamCode;
     request.post({
-            url: 'http://' + host + ":" + expressPort + '/authentication',
-            // form: {
-            //     'email': req.body.email,
-            //     'token': req.body.token
-            // }
+            url: 'http://' + host + ":" + expressPort + '/authenticate',
             headers: {
                 'Cookie': cookiesReq
             }
@@ -190,15 +220,40 @@ app.post('/logout', function (req, res) {
             if (response.code == 200) {
                 mysql.deleteTokenByEmail(req.cookies.emailTeamCode, function (err) {
                     if (!err) {
-                        res.send({code: 200, message: 'You has been logout.'});
+                        res.json({
+                            code: 200,
+                            message: 'You has been logout.'
+                        });
                         //res.send(helper.ToJSON(200, 'You has been logout.'));
                     }
                     else {
-                        res.send({code: 250, message: 'Error!'});
+                        res.json({
+                            code: 250,
+                            message: 'Error!'
+                        });
                     }
                 });
             }
         });
+});
+
+app.post('/projects', function (req, res) {
+    var tempUser = new User();
+    tempUser.createProject(req.cookies.emailTeamCode, req.body.project_name, req.body.project_stack, function (err, ports) {
+        if (!err) {
+            res.json({
+                code: 200,
+                message: 'Project Created!',
+                ports: ports
+            });
+        }
+        else {
+            res.json({
+                code: 250,
+                message: 'Error!'
+            });
+        }
+    });
 });
 
 app.listen(expressPort, function () {

@@ -1,5 +1,9 @@
 'use strict';
 var md5 = require('md5');
+var portastic = require('portastic');
+var exec = require('child_process').exec;
+var fs = require('fs');
+var ncp = require('ncp').ncp;
 
 function User() {
     this.id = '0';
@@ -42,6 +46,66 @@ User.prototype.checkPassword = function (password) {
     }
     return false;
 };
+
+User.prototype.createProject = function (email, projectName, projectStack, callback) {
+    console.log(email, projectName, projectStack);
+    // scan port
+    portastic.find({
+        min: 4900,
+        max: 5900
+    }).then(function (ports) {
+        console.log('Port avaible %s', ports.join(', '));
+        var port_website = ports[0];
+        var port_database = ports[1];
+        console.log(port_website, port_database);
+
+        //copy folder docker
+        var command_copy = 'sudo mkdir /teamcode/' + projectName + '-' + email + ' && sudo cp /teamcode_lib/LAMP_STACK/* /teamcode/' + projectName + '-' + email;
+        exec(command_copy, function (error, stdout, stderr) {
+            // console.log('stdout: ' + stdout);
+            // console.log('stderr: ' + stderr);
+            if (error !== null) {
+                console.log('exec error: ' + error);
+                callback(error);
+            }
+            else {
+                // edit file
+                var link_file = '/teamcode/' + projectName + '-' + email + '/docker-compose.yml';
+                var data = fs.readFileSync(link_file).toString();
+                data = data.replace("{port-website}", port_website);
+                data = data.replace("{port-database}", port_database);
+
+                console.log(data);
+
+                var fd = fs.openSync('docker-compose.yml', 'w+');
+                fs.writeFileSync(fd, data);
+                fs.closeSync(fd);
+
+                // execute child process to create docker env
+                var command_docker = 'cd /teamcode/' + projectName + '-' + email + ' && docker-compose up -d';
+                exec(command_docker, function (error, stdout, stderr) {
+                    // console.log('stdout: ' + stdout);
+                    // console.log('stderr: ' + stderr);
+                    if (error !== null) {
+                        console.log('exec error: ' + error);
+                        callback(error);
+                    }
+                    else {
+                        // store port in database and set flag project is true
+
+                        // send port and flag to client
+                        callback(null, {port_website: port_website, port_database: port_database});
+                    }
+
+                });
+            }
+        });
+
+    });
+
+
+
+}
 
 module.exports = User;
 

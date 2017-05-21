@@ -8,10 +8,6 @@ function mainController($scope, userService, $state, $timeout) {
     vm.title = 'TeamCode';
 
     vm.user = userService;
-    // vm.isAuthenticated = userService.isAuthenticated();
-    // vm.email = userService.getEmail();
-    // console.log(userService.isAuthenticated());
-    // console.log(userService.getEmail());
 
     vm.logout = logout;
 

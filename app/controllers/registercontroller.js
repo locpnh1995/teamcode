@@ -24,6 +24,9 @@ function registerController($scope, userService, $state, $timeout) {
                     else if (response.code == 211) {
                         Materialize.toast('Email already exists!', 4000);
                     }
+                    else if (response.code == 216) {
+                        Materialize.toast('Password and Re-Password don\'t match', 4000);
+                    }
                     else {
                         Materialize.toast('Register failed!', 4000);
                     }

@@ -14,7 +14,7 @@ function loginController($scope, userService, $state, $timeout) {
                 if (response.code == 200) { // login success
                     Materialize.toast('Login success!', 2000);
                     $timeout(function () {
-                        $state.go('structure.homepage');
+                        $state.go('structure.dashboard');
                     }, 2000);
                 }
                 else if (response.code == 214) { // wrong email
