@@ -27,7 +27,7 @@ const USER_TABLE = 'users';
 mysql.setup({
     host: host,
     user: 'root',
-    password: '',
+    password: '123456',
     database: 'teamcode'
 });
 
@@ -257,7 +257,7 @@ app.post('/projects', function (req, res) {
 });
 
 app.listen(expressPort, function () {
-    console.log('ExpressJS listening on ' + expressPort);
+    console.log('Server listening on ' + expressPort);
 });
 
 // //for socketio

@@ -14,10 +14,10 @@ function dashboardController($scope, userService, $state, $timeout) {
     vm.createEnv = createEnv;
 
     function createEnv() {
-        // userService.createProject(vm.project).then(function () {
-        //
-        // }, function () {
-        //
-        // });
+        userService.createProject(vm.project).then(function (data) {
+            console.log(data);
+        }, function (error) {
+            console.log(error);
+        });
     }
 }

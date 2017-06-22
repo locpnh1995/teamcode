@@ -4,7 +4,7 @@ const MAX_TOKEN_SIZE = 62;
 
 const DEFAULT_HOST = 'localhost';
 const DEFAULT_USERNAME = 'root';
-const DEFAULT_PASSWORD = '';
+const DEFAULT_PASSWORD = '123456';
 const DEFAULT_DB = 'teamcode';
 const DEFAULT_PORT = 3306;
 
