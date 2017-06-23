@@ -52,6 +52,21 @@ app.use(function (req, res, next) {
 
 app.get('/', function (req, res) {
     res.sendFile(path.join(__dirname, '../../', 'index.html'));
+    
+    /*var projectInfo = {};
+    projectInfo.email = 'locpnh1995@gmail.com';
+    projectInfo.projectName = 'demo25';
+    projectInfo.dockerName = 'demo25';
+    projectInfo.dockerInfo = {};
+    projectInfo.dockerInfo.dockerName = 'demo25';
+    projectInfo.dockerInfo.sshPassword = '123456';
+    projectInfo.dockerInfo.websitePort = '4444';
+    projectInfo.dockerInfo.databasePort = '4445';
+    projectInfo.dockerInfo.sshPort='22';*/
+
+    mysql.getProjectByEmail('locpnh1995@gmail.com',function(err,result){
+        console.log('project',result);
+    });
 });
 
 app.post('/authenticate', function (req, res) {

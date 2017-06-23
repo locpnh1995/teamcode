@@ -170,4 +170,154 @@ mysqldb.prototype.updateTokenExpiresAt = function (time, email, callback) {
     });
 };
 
+mysqldb.prototype.insertProject = function (projectInfo,callback) {
+
+    console.log('projectInfo',projectInfo);
+    var createdAt = helper.GetDateTime();
+    var ownerId=0;
+
+    var mysql=this;
+
+    this.findUserByEmail(projectInfo.email,function (err, user){
+        if (err === false){
+            console.log('this',mysql);
+            console.log('user id',user.id)
+           ownerId=user.id;
+
+            if (ownerId == 0){
+                console.log ("Email is not exist!");
+                return false;
+            }
+
+        mysql.insertDocker(projectInfo.dockerInfo,function(err, result){
+
+            if(err === false)
+            {
+                var query = "INSERT INTO projects (owner_id, project_name, docker_name, created_at) values (?, ?, ?, ?)";
+
+                mysql.connection.query(query, [ownerId, projectInfo.projectName, projectInfo.dockerName, createdAt], function (err, result) {
+                    console.log('query');
+                    if (err) {
+                        console.log(err);
+                        callback(err);
+                    }
+                    else {
+                        console.log('result',result);
+                        callback(false,result);
+                    }
+                });
+            }
+            else
+            {
+                console.log(err);
+                console.log('Insert to Docker is not complete!');
+            }
+
+        });
+
+        }
+    });
+
+    console.log('after',ownerId.value);
+    return;
+
+ 
+};
+
+mysqldb.prototype.insertDocker = function (dockerInfo,callback) {
+
+    //console.log('projectInfo',wesprojectInfo);
+    //var createdAt = helper.GetDateTime();
+    //var ownerId=0;
+    var mysql=this;
+
+    var query = "INSERT INTO dockers (docker_name, ssh_password, website_port, database_port, ssh_port) values (?, ?, ?, ?, ?)";
+
+    mysql.connection.query(query, [dockerInfo.dockerName, dockerInfo.sshPassword, dockerInfo.websitePort, dockerInfo.databasePort, dockerInfo.sshPort], function (err, result) {
+        console.log('query');
+        if (err) {
+            console.log(err);
+            callback(err);
+        }
+        else {
+            console.log('result',result);
+            callback(false,result);
+        }
+    }); 
+};
+
+mysqldb.prototype.insertContributor = function (contributorInfo,callback) {
+
+    //console.log('projectInfo',wesprojectInfo);
+    //var createdAt = helper.GetDateTime();
+    //var ownerId=0;
+    var mysql=this;
+
+    var query = "INSERT INTO dockers (docker_name, ssh_password, website_port, database_port, ssh_port) values (?, ?, ?, ?, ?)";
+
+    mysql.connection.query(query, [dockerInfo.dockerName, dockerInfo.sshPassword, dockerInfo.websitePort, dockerInfo.databasePort, dockerInfo.sshPort], function (err, result) {
+        console.log('query');
+        if (err) {
+            console.log(err);
+            callback(err);
+        }
+        else {
+            console.log('result',result);
+            callback(false,result);
+        }
+    }); 
+};
+
+
+mysqldb.prototype.getProjectByOwnerIdAndProjectName = function (ownerId, projectName){
+    var query = "SELECT * FROM projects WHERE owner_id = ? AND project_name = ?";
+
+    this.connection.query(query, [ownerId, projectName], function (err, result) {
+        console.log('query');
+        if (err) {
+            console.log(err);
+            callback(err);
+        }
+        else {
+            console.log('result',result);
+            callback(false,result);
+        }
+    }); 
+
+};
+
+
+mysqldb.prototype.getProjectByEmail = function (email,callback){
+    //var query = "SELECT * FROM projects WHERE owner_id = ? AND project_name = ?";
+
+    var mysql=this;
+
+    this.findUserByEmail(email,function (err, user){
+        if (err === false){
+            var ownerId=0;
+            
+            ownerId=user.id;
+
+            if (ownerId == 0){
+                console.log ("Email is not exist!");
+                return false;
+            }
+
+            var query = "SELECT * FROM projects WHERE owner_id = ?";
+
+            mysql.connection.query(query, [ownerId], function (err, result) {
+                console.log('query');
+                if (err) {
+                    console.log(err);
+                    callback(err);
+                }
+                else {
+                    callback(false,result);
+                }
+            }); 
+        }
+    });
+
+};
+
 module.exports = mysqldb;
